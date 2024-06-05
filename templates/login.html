@@ -19,7 +19,9 @@
         }
 
         body {
-            background-color: #080710;
+            /* background-color: #080710; */
+            background-image: url(https://wallpaperaccess.com/full/2939798.jpg);
+            background-size: cover;
         }
 
         .background {
@@ -46,9 +48,11 @@
         }
 
         .shape:last-child {
-            background: linear-gradient(to right,
+            /* background: linear-gradient(to right,
                     #ff512f,
-                    #f09819);
+                    #f09819); */
+                    background: linear-gradient(#1845ad,
+                    #23a2f6);
             right: -15px;
             bottom: 100px;
         }
@@ -168,7 +172,8 @@
     {% if show_signup_link %}
     <div  >
     <p style="color: #23a2f6; font-family: sans-serif;font-size: 2.3vh;">Don't have an account?</p>
-    <a style="color: #f09819; font-family: sans-serif;font-size: 3.66vh;" href="/signup">Sign up</a>
+    <a style="   color: linear-gradient(#1845ad,
+    #23a2f6);; font-family: sans-serif;font-size: 3.66vh;" href="/signup">Sign up</a>
     </div>
     {% endif %}
 

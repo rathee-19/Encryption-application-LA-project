@@ -1,38 +1,54 @@
-from flask import Flask, render_template, request, redirect,url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
 import json
 import base64
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
+from Crypto.Random import get_random_bytes
 
 import numpy as np
 from numpy.linalg import inv
-# key = get_random_bytes(16) 
 app = Flask(__name__)
-key = np.array([[6, 24, 1], [13, 16, 10], [20, 17, 15]])  # You can choose the desired key matrix
+key1 = np.array([[6, 24, 1], [13, 16, 10], [20, 17, 15]])  # You can choose the desired key matrix
 
-def encrypt_password(password, key):
+def encrypt_password1(password, key):
     n = len(key)
     encrypted_password = ""
     for i in range(0, len(password), n):
         block = password[i:i + n]
         if len(block) < n:
             block += 'X' * (n - len(block))
-        block_vector = np.array([ord(char.upper()) - ord('A') for char in block])
+        block_vector = np.array([ord(char) - ord('A') for char in block])
         encrypted_block = np.dot(key, block_vector) % 26
         encrypted_block_chars = [chr(val + ord('A')) for val in encrypted_block]
         encrypted_password += ''.join(encrypted_block_chars)
     return encrypted_password
+# app = Flask(__name__)
 
-def decrypt_password(encrypted_password, key):
+def decrypt_password1(encrypted_password, key):
     n = len(key)
     decrypted_password = ""
     inverse_key = inv(key)
     for i in range(0, len(encrypted_password), n):
         block = encrypted_password[i:i + n]
-        block_vector = np.array([ord(char.upper()) - ord('A') for char in block])
+        block_vector = np.array([ord(char) - ord('A') for char in block])
         decrypted_block = np.dot(inverse_key, block_vector) % 26
-        decrypted_block_chars = [chr(val % 26 + ord('A')) for val in decrypted_block]
+        decrypted_block = np.round(decrypted_block).astype(int)  # Cast the result to integers
+        decrypted_block_chars = [chr(val + ord('A')) for val in decrypted_block]
         decrypted_password += ''.join(decrypted_block_chars)
     return decrypted_password
+
+key = get_random_bytes(16) 
+
+def encrypt_password(password, key):
+    cipher = AES.new(key, AES.MODE_ECB)
+    encrypted_password = cipher.encrypt(pad(password.encode('utf-8'), AES.block_size))
+    return encrypted_password
+
+def decrypt_password(encrypted_password, key):
+    cipher = AES.new(key, AES.MODE_ECB)
+    decrypted_password = unpad(cipher.decrypt(encrypted_password), AES.block_size)
+    return decrypted_password.decode('utf-8')
 def create_table():
     conn = sqlite3.connect('user_data.db')
     c = conn.cursor()
@@ -43,9 +59,10 @@ def create_table():
                  age INTEGER,
                  gender TEXT,
                  address TEXT,
-                 contact INTEGER,
+                 contact TEXT,
                  photo BLOB,
-                 dec_pass TEXT)''')
+                 dec_pass TEXT,
+                 password_hill TEXT)''')
     conn.commit()
     conn.close()
 @app.route('/')
@@ -62,13 +79,14 @@ def signup():
 def submit():
     name = request.form['name']
     password = request.form['password']
-    key = np.array([[6, 24, 1], [13, 16, 10], [20, 17, 15]])
     encrypted_password = encrypt_password(password, key)
-    # print(encrypted_password)
+    encrypted_password1 = encrypt_password1(password,key1)
+    # encrypted_password1 = encrypt_password1
+    # print(encrypt_password1)
+    print(encrypted_password)
     print(name)
     # Assuming you have the encrypted password and the key matrix
     decrypted_password = decrypt_password(encrypted_password, key)
-    # print(decrypted_password)
     age = request.form['age']
 
     gender = request.form['gender']
@@ -76,10 +94,12 @@ def submit():
     contact = request.form['contact']
 
     photo = request.files['photo'].read()
+    # password_hill = request.form['password_hill']
+
 
     conn = sqlite3.connect('user_data.db')
     c = conn.cursor()
-    c.execute('INSERT INTO users (name, age, password, gender, address, contact, photo, dec_pass) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', (name, age, encrypted_password, gender, address, contact, photo, decrypted_password))
+    c.execute('INSERT INTO users (name, age, password, gender, address, contact, photo, dec_pass, password_hill) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', (name, age, encrypted_password, gender, address, contact, photo, decrypted_password, encrypted_password1))
     conn.commit()
     conn.close()
 
@@ -145,7 +165,7 @@ def get_user(name):
         return render_template('user.html', user=user_dict, kk=name)
     else:
         return render_template('signup.html', error='User not found')
-           
+
 if __name__ == '__main__':
     create_table()
     app.run(port=3000, debug=True)

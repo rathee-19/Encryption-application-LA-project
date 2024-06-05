@@ -22,6 +22,7 @@
       /* background-image: linear-gradient(black, rgb(45, 1, 1), black); */
       /* background-image: url(https://images.pexels.com/photos/1304642/pexels-photo-1304642.jpeg?auto=compress&cs=tinysrgb&w=1600); */
       background-color: #333;
+      background-image: url(https://wallpaperaccess.com/full/2939798.jpg);
       /* backface-visibility:0.5; */
       /* opacity: 0.9; */
       background-size: cover;
@@ -43,6 +44,7 @@
       padding: 2px;
       padding-left: 30px;
       padding-right: 30px;
+      
     }
 
     .imgk {
@@ -56,7 +58,7 @@
 
     .imgk:hover {
       transform: scale(1.2);
-      border: rgb(239, 150, 150) solid 5px;
+      border: #2c97c9 solid 5px;
     }
 
     .bio {
@@ -155,13 +157,18 @@
 }
 
 .main .card {
-    background-color: #fff;
+    /* background-color: #fff; */
     border-radius: 18px;
     box-shadow: 1px 1px 8px 0 grey;
     height: auto;
+    color: white;
     margin-bottom: 20px;
     padding: 20px 0 20px 50px;
     height: 55vh;
+    backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
+
 }
 
 .main .card table {
@@ -185,7 +192,7 @@ tr{
 
 
 .sidenav {
-    background-color: #fff;
+    /* background-color: #fff; */
     color: #333;
     border-bottom-right-radius: 25px;
     height: 86%;
@@ -195,12 +202,20 @@ tr{
     position: absolute;
     top: 70px;
     width: 350px;
+    backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
+
 }
 
 .profile {
     margin-bottom: 20px;
     margin-top: -12px;
     text-align: center;
+    /* backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 40px rgba(8, 7, 16, 0.6); */
+
 }
 
 .profile img {
@@ -209,9 +224,11 @@ tr{
 }
 
 .name {
-    font-size: 20px;
+    font-size: 40px;
     font-weight: bold;
     padding-top: 20px;
+    color: white;
+
 }
 
 .job {
@@ -300,7 +317,7 @@ tr{
   </div>
   
     <div class="main">
-      <h1 style="color: #2195ca;">IDENTITY</h1>
+      <h1 style="color: #2c97c9;">IDENTITY</h1>
       <div class="card">
           <div class="card-body">
               <i class="fa fa-pen fa-xs edit"></i>
